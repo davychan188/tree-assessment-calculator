@@ -17,10 +17,10 @@
   - `f`：Form / Health / Structure 任何一項為 P
   - `g`：樹種為 *Leucaena leucocephala*
   - `h`：Remarks 含 slope / on slope
-  - `i`：Remarks 含 hoarding / road / slope
+  - `i`：Remarks 含 hoarding / road / slope / restricted root growth
 
 修改 Remarks 後會即時重新計算。可匯出更新後的 Excel。未配對到官方名單的 Remarks 會以橙色標示，並集中列在「未在名單內」一頁（含棵數同 Tree No.）；匯出 Excel 亦有 Not in Defect List 工作表。
 
 ## 檔案格式
 
-預設讀取名稱含 `Initial`、`Tree` 或 `Schedule` 的工作表，欄位順序與常見 Tree Assessment Schedule 相同（Tree No.、Scientific Name、Height、DBH、Form / Health / Structure、Suitability Remarks、Remarks 等）。
+預設讀取名稱含 `Initial`、`Tree` 或 `Schedule` 的工作表，並按欄名識別 Tree No.、Scientific Name、Height、DBH、Form / Health / Structure、Suitability Remarks、Remarks 等（兼容前面有 Prohibited、TPRP/NEW 等額外欄的日程表）。

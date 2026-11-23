@@ -61,6 +61,8 @@
   .legend-item strong { color: var(--primary); }
   .highlight-rule { background: #fff3e0; padding: 0.1rem 0.35rem; border-radius: 3px; font-weight: 600; }
   table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.4rem; }
+  #treeTable { min-width: 1600px; }
+  #treeTable .remarks-input { min-width: 240px; }
   th, td { border: 1px solid var(--line); padding: 0.4rem 0.45rem; vertical-align: top; }
   th { background: var(--primary); color: white; position: sticky; top: 0; z-index: 2; }
   tr:nth-child(even) { background: #fafafa; }
@@ -144,7 +146,7 @@
           <span class="highlight-rule">f</span> 當 Form / Health / Structure 任何一項為 P<br>
           <span class="highlight-rule">g</span> 樹種為 Leucaena leucocephala<br>
           <span class="highlight-rule">h</span> Remarks 含 slope / on slope<br>
-          <span class="highlight-rule">i</span> Remarks 含 hoarding / road / slope
+          <span class="highlight-rule">i</span> Remarks 含 hoarding / road / slope / restricted root growth
         </div>
       </div>
     </div>
@@ -357,7 +359,7 @@ function calcSuitCodes(tree) {
   if (hasSignificantDefect(tree)) codes.push("f");
   if (species.trim() === "Leucaena leucocephala") codes.push("g");
   if (searchIn(remarks, "slope") || searchIn(remarks, "on slope")) codes.push("h");
-  if (searchIn(remarks, "hoarding") || searchIn(remarks, "road") || searchIn(remarks, "slope") || searchIn(remarks, "proximity to the hoarding")) {
+  if (searchIn(remarks, "hoarding") || searchIn(remarks, "road") || searchIn(remarks, "slope") || searchIn(remarks, "proximity to the hoarding") || searchIn(remarks, "restricted root growth")) {
     codes.push("i");
   }
   return [...new Set(codes)].sort().join(",");
@@ -508,45 +510,104 @@ function renderTable(filter = "") {
   renderUnmatchedList();
 }
 
+function cellText(v) {
+  return String(v ?? "").replace(/\u00a0/g, " ").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function findCol(labels, pred) {
+  for (let i = 0; i < labels.length; i++) {
+    if (pred(normalize(labels[i]))) return i;
+  }
+  return -1;
+}
+
+function buildColumnMap(rows) {
+  let headerRow = -1;
+  for (let i = 0; i < Math.min(15, rows.length); i++) {
+    if (rows[i].some(c => /tree\s*no/i.test(String(c)))) { headerRow = i; break; }
+  }
+  if (headerRow < 0) return { startRow: 5, col: {} };
+
+  const next = rows[headerRow + 1] || [];
+  const hasSub = next.some(c => /scientific|height|chinese\s*name|\bform\b|\bdbh\b/i.test(String(c)));
+  const width = Math.max(rows[headerRow].length, next.length);
+  const labels = [];
+  for (let c = 0; c < width; c++) {
+    const a = cellText(rows[headerRow][c]);
+    const b = hasSub ? cellText(next[c]) : "";
+    labels[c] = [a, b].filter(Boolean).join(" ");
+  }
+
+  const col = {
+    part: findCol(labels, n => n === "part"),
+    prohibited: findCol(labels, n => n.includes("prohibited")),
+    tprp: findCol(labels, n => n.includes("tprp")),
+    group: findCol(labels, n => n.includes("tree group")),
+    treeNo: findCol(labels, n => n.includes("tree no")),
+    drawing: findCol(labels, n => n.includes("drawing")),
+    species: findCol(labels, n => n.includes("scientific") || (n.includes("species") && !n.includes("chinese"))),
+    chinese: findCol(labels, n => n.includes("chinese")),
+    height: findCol(labels, n => n.includes("height")),
+    dbh: findCol(labels, n => /\bdbh\b/.test(n)),
+    crown: findCol(labels, n => n.includes("crown")),
+    amenity: findCol(labels, n => n.includes("amenity")),
+    form: findCol(labels, n => /(^| )form( |$)/.test(n) && !n.includes("format") && !n.includes("information")),
+    health: findCol(labels, n => n.includes("health")),
+    structure: findCol(labels, n => n.includes("structure")),
+    suitability: findCol(labels, n => n.includes("suitability") && (n.includes("high") || n.includes("medium") || n.includes("low") || n.includes("(h"))),
+    origSuitRem: findCol(labels, n => n.includes("remarks*") || n.includes("remarks *") || (n.includes("suitability") && n.includes("remarks") && !n.includes("high"))),
+    conservation: findCol(labels, n => n.includes("conservation")),
+    remarks: findCol(labels, n => n.replace(/\s/g, "") === "remarks"),
+    tip: findCol(labels, n => n.includes("particular interest")),
+    easting: findCol(labels, n => n.includes("easting")),
+    northing: findCol(labels, n => n.includes("northing")),
+    rootLevel: findCol(labels, n => n.includes("root level") || /\bmpd\b/.test(n))
+  };
+
+  return { startRow: hasSub ? headerRow + 2 : headerRow + 1, col };
+}
+
+function cellAt(row, idx) {
+  return idx >= 0 && idx < row.length ? row[idx] : "";
+}
+
 function parseWorkbook(data) {
   const wb = XLSX.read(data, { type: "array" });
   const sheetName = wb.SheetNames.find(n => n.includes("Initial") || n.includes("Tree") || n.includes("Schedule")) || wb.SheetNames[0];
   const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: "" });
-
-  let startRow = 5;
-  for (let i = 0; i < Math.min(12, rows.length); i++) {
-    if (rows[i].some(c => String(c).includes("Tree No"))) { startRow = i + 1; break; }
-  }
+  const { startRow, col } = buildColumnMap(rows);
 
   const trees = [];
   for (let i = startRow; i < rows.length; i++) {
     const r = rows[i];
-    const treeNo = r[2];
-    const species = r[4];
-    if ((!treeNo && !species) || String(treeNo).includes("Tree No") || String(species).includes("Scientific")) continue;
-    if (!treeNo && !species) continue;
-    if (!String(treeNo || "").trim()) continue;
+    const treeNo = cellText(cellAt(r, col.treeNo));
+    const species = cellText(cellAt(r, col.species));
+    if (!treeNo) continue;
+    if (/tree\s*no/i.test(treeNo) || /scientific/i.test(species)) continue;
     const tree = {
-      part: r[0] || "",
-      group: r[1] || "",
-      treeNo: String(treeNo).trim(),
-      drawing: r[3] || "",
+      part: cellAt(r, col.part) || "",
+      prohibited: cellAt(r, col.prohibited) || "",
+      tprp: cellAt(r, col.tprp) || "",
+      group: cellAt(r, col.group) || "",
+      treeNo,
+      drawing: cellAt(r, col.drawing) || "",
       species: species || "",
-      chinese: r[5] || "",
-      height: r[6] || "",
-      dbh: r[7] || "",
-      crown: r[8] || "",
-      amenity: r[9] || "",
-      origForm: String(r[10] || "").trim().toUpperCase(),
-      origHealth: String(r[11] || "").trim().toUpperCase(),
-      origStructure: String(r[12] || "").trim().toUpperCase(),
-      suitability: r[13] || "L",
-      origSuitRem: r[14] || "",
-      conservation: r[15] || "",
-      remarks: r[16] || "",
-      easting: r[18] || "",
-      northing: r[19] || "",
-      rootLevel: r[20] || ""
+      chinese: cellAt(r, col.chinese) || "",
+      height: cellAt(r, col.height) || "",
+      dbh: cellAt(r, col.dbh) || "",
+      crown: cellAt(r, col.crown) || "",
+      amenity: cellAt(r, col.amenity) || "",
+      origForm: cellText(cellAt(r, col.form)).toUpperCase(),
+      origHealth: cellText(cellAt(r, col.health)).toUpperCase(),
+      origStructure: cellText(cellAt(r, col.structure)).toUpperCase(),
+      suitability: cellAt(r, col.suitability) || "L",
+      origSuitRem: cellAt(r, col.origSuitRem) || "",
+      conservation: cellAt(r, col.conservation) || "",
+      remarks: cellAt(r, col.remarks) || "",
+      tip: cellAt(r, col.tip) || "",
+      easting: cellAt(r, col.easting) || "",
+      northing: cellAt(r, col.northing) || "",
+      rootLevel: cellAt(r, col.rootLevel) || ""
     };
     recompute(tree);
     trees.push(tree);
@@ -616,6 +677,8 @@ function exportData() {
   if (!allTrees.length) { alert("請先上傳 Excel 檔案"); return; }
   const out = allTrees.map(t => ({
     "Part": t.part,
+    "Prohibited": t.prohibited,
+    "TPRP/NEW": t.tprp,
     "Tree Group": t.group,
     "Tree No.": t.treeNo,
     "Drawing No.": t.drawing,
@@ -638,6 +701,7 @@ function exportData() {
     "Unmatched Remarks": (t.unmatched || []).join("; "),
     "Conservation Status": t.conservation,
     "Remarks": t.remarks,
+    "Tree of Particular Interest": t.tip,
     "Easting": t.easting,
     "Northing": t.northing,
     "Root level (mPD)": t.rootLevel
