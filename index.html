@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tree Assessment Defect Calculator</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --primary: #1a5f4a;
+    --primary-light: #2d8a6e;
+    --accent: #e8f5e9;
+    --danger: #c62828;
+    --warning: #f57c00;
+    --ok: #2e7d32;
+    --bg: #f5f7f6;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #5b6660;
+    --line: #d5ddd8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang HK", "PingFang TC", sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    line-height: 1.45;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; padding: 1rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 0.3rem 0 0; opacity: 0.92; font-size: 0.9rem; }
+  .container { max-width: 1700px; margin: 0 auto; padding: 1rem; }
+  .card {
+    background: var(--card); border-radius: 10px; padding: 1rem 1.15rem;
+    margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
+  input[type="file"], input[type="text"], input[type="search"], select, button {
+    padding: 0.55rem 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 0.95rem;
+  }
+  button {
+    background: var(--primary); color: white; border: none; cursor: pointer; font-weight: 600;
+    min-height: 42px;
+  }
+  button:hover { background: var(--primary-light); }
+  button.secondary { background: #555; }
+  button.secondary:hover { background: #333; }
+  .dropzone {
+    flex: 1; min-width: 220px; border: 2px dashed var(--line); border-radius: 8px;
+    padding: 0.55rem 0.8rem; color: var(--muted); background: #fafcfb;
+  }
+  .dropzone.drag { border-color: var(--primary); background: var(--accent); }
+  .legend {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.6rem;
+    font-size: 0.85rem; margin-top: 0.5rem;
+  }
+  .legend-item { background: #f8f9fa; padding: 0.55rem 0.7rem; border-radius: 6px; border-left: 3px solid var(--primary); }
+  .legend-item strong { color: var(--primary); }
+  .highlight-rule { background: #fff3e0; padding: 0.1rem 0.35rem; border-radius: 3px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.4rem; }
+  th, td { border: 1px solid var(--line); padding: 0.4rem 0.45rem; vertical-align: top; }
+  th { background: var(--primary); color: white; position: sticky; top: 0; z-index: 2; }
+  tr:nth-child(even) { background: #fafafa; }
+  tr:hover { background: #f0f7f4; }
+  .tree-col { position: sticky; left: 0; background: inherit; z-index: 1; font-weight: 600; }
+  thead .tree-col { z-index: 3; background: var(--primary); }
+  .remarks-input {
+    width: 100%; min-height: 70px; font-size: 0.8rem; padding: 0.35rem;
+    border: 1px solid #bbb; border-radius: 4px; resize: vertical; font-family: inherit;
+  }
+  .match { color: var(--ok); font-weight: 600; }
+  .diff { color: var(--danger); font-weight: 600; background: #ffebee; }
+  .computed { font-weight: 600; }
+  .badge {
+    display: inline-block; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;
+  }
+  .badge-p { background: #ffcdd2; color: #b71c1c; }
+  .badge-a { background: #fff9c4; color: #f57f17; }
+  .badge-g { background: #c8e6c9; color: #1b5e20; }
+  .chip {
+    display: inline-block; margin: 0 0.2rem 0.2rem 0; padding: 0.1rem 0.4rem;
+    border-radius: 999px; background: #e8f5e9; font-size: 0.72rem;
+  }
+  .chip.unmatched { background: #fff3e0; color: #e65100; }
+  .stats { font-size: 0.92rem; color: #444; margin-top: 0.7rem; }
+  .search-box { min-width: 200px; flex: 1; }
+  .tabs { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+  .tabs button {
+    background: #eef2f0; color: var(--text); font-weight: 600;
+  }
+  .tabs button.active { background: var(--primary); color: #fff; }
+  .table-wrap { overflow: auto; max-height: calc(100vh - 220px); -webkit-overflow-scrolling: touch; }
+  footer { text-align: center; padding: 1rem; font-size: 0.8rem; color: #666; }
+  details.rules summary { cursor: pointer; font-weight: 700; color: var(--primary); }
+  #defectSearch { width: min(100%, 320px); margin-bottom: 0.6rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Tree Assessment Defect Calculator</h1>
+  <p>根據官方缺陷名單，由 Remarks 自動計算 Form / Health / Structure 及 Suitability Remarks 代碼</p>
+</header>
+
+<div class="container">
+  <div class="card">
+    <div class="controls">
+      <label class="dropzone" id="dropzone">上傳或拖放 Tree Schedule Excel（.xlsx / .xls）
+        <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:block;margin-top:0.35rem;">
+      </label>
+      <input type="search" id="search" class="search-box" placeholder="搜尋 Tree No. / Species / Remarks...">
+      <button type="button" onclick="exportData()">匯出更新後的 Excel</button>
+      <button type="button" class="secondary" onclick="resetAll()">重置所有修改</button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button type="button" class="active" data-panel="rulesPanel">規則說明</button>
+      <button type="button" data-panel="defectPanel">缺陷名單（161）</button>
+    </div>
+    <div id="rulesPanel">
+      <div class="legend">
+        <div class="legend-item">
+          <strong>Form / Health / Structure</strong><br>
+          對 Remarks 逐項配對官方缺陷名單。該項若標示 P，對應評分便為 P；否則為 A。空 Remarks 時 Health / Structure 留空，Form 為 A。Dead tree 三項皆為 P；銀合歡（<em>Leucaena leucocephala</em>）Form 及 Structure 為 P。
+        </div>
+        <div class="legend-item">
+          <strong>Suitability Remarks 代碼</strong><br>
+          <span class="highlight-rule">a</span> 一律加上<br>
+          <span class="highlight-rule">b, c</span> 當高度大過 5m <em>而且</em> DBH 大過 200mm（剛好 5m 或 200mm 不加）<br>
+          <span class="highlight-rule">d</span> 當 DBH 大過 700mm<br>
+          <span class="highlight-rule">e</span> 不自動加上<br>
+          <span class="highlight-rule">f</span> 當 Form / Health / Structure 任何一項為 P<br>
+          <span class="highlight-rule">g</span> 樹種為 Leucaena leucocephala<br>
+          <span class="highlight-rule">h</span> Remarks 含 slope / on slope<br>
+          <span class="highlight-rule">i</span> Remarks 含 hoarding / road / slope
+        </div>
+      </div>
+    </div>
+    <div id="defectPanel" hidden>
+      <input type="search" id="defectSearch" placeholder="搜尋缺陷名稱...">
+      <div class="table-wrap" style="max-height:360px;">
+        <table id="defectTable">
+          <thead>
+            <tr><th>#</th><th>Defect</th><th>Health</th><th>Structure</th><th>Form</th></tr>
+          </thead>
+          <tbody id="defectBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding-right:0.6rem;">
+    <div class="table-wrap">
+      <table id="treeTable">
+        <thead>
+          <tr>
+            <th class="tree-col">Tree No.</th>
+            <th>Scientific Name</th>
+            <th>中文名</th>
+            <th>H (m)</th>
+            <th>DBH</th>
+            <th>Amenity</th>
+            <th>Suit. (H/M/L)</th>
+            <th>Orig Form</th>
+            <th>Calc Form</th>
+            <th>Orig Health</th>
+            <th>Calc Health</th>
+            <th>Orig Struct</th>
+            <th>Calc Struct</th>
+            <th>Calc Suit. Codes</th>
+            <th>配對到的缺陷</th>
+            <th>Remarks（可編輯）</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Tree Assessment Defect Calculator · 資料只在瀏覽器處理，不會上傳伺服器
+</footer>
+
+<script>
+const OFFICIAL_DEFECTS = [{"id": 1, "name": "Abnormal bark crack on branch", "health": "", "structure": "", "form": ""}, {"id": 2, "name": "Abnormal bark crack on trunk", "health": "", "structure": "P", "form": ""}, {"id": 3, "name": "Abnormal leaf size", "health": "P", "structure": "", "form": ""}, {"id": 4, "name": "Asymmetric crown", "health": "", "structure": "P", "form": "P"}, {"id": 5, "name": "Bending", "health": "", "structure": "P", "form": "P"}, {"id": 6, "name": "Beehive", "health": "", "structure": "", "form": ""}, {"id": 7, "name": "Bird nest", "health": "", "structure": "", "form": ""}, {"id": 8, "name": "Borer frass", "health": "", "structure": "", "form": ""}, {"id": 9, "name": "Borer holes", "health": "", "structure": "P", "form": ""}, {"id": 10, "name": "Broken branch", "health": "", "structure": "", "form": ""}, {"id": 11, "name": "Broken branches", "health": "", "structure": "", "form": ""}, {"id": 12, "name": "Broken leader", "health": "", "structure": "P", "form": ""}, {"id": 13, "name": "Bulge", "health": "", "structure": "P", "form": ""}, {"id": 14, "name": "Burls", "health": "", "structure": "", "form": ""}, {"id": 15, "name": "Canker", "health": "", "structure": "P", "form": ""}, {"id": 16, "name": "Cavity on branch", "health": "", "structure": "P", "form": ""}, {"id": 17, "name": "Cavity on roots", "health": "", "structure": "P", "form": ""}, {"id": 18, "name": "Cavity on trunk", "health": "", "structure": "P", "form": ""}, {"id": 19, "name": "Chlorotic leaves", "health": "P", "structure": "", "form": ""}, {"id": 20, "name": "Climbers", "health": "P", "structure": "", "form": ""}, {"id": 21, "name": "Collapsed", "health": "", "structure": "P", "form": "P"}, {"id": 22, "name": "Co-dominant branches", "health": "", "structure": "", "form": ""}, {"id": 23, "name": "Co-dominant branches with included bark", "health": "", "structure": "P", "form": ""}, {"id": 24, "name": "Co-dominant trunks", "health": "", "structure": "P", "form": ""}, {"id": 25, "name": "Co-dominant trunks with included bark", "health": "", "structure": "P", "form": ""}, {"id": 26, "name": "Conflict with building", "health": "", "structure": "", "form": "P"}, {"id": 27, "name": "Conflict with traffic", "health": "", "structure": "", "form": "P"}, {"id": 28, "name": "Crack", "health": "", "structure": "P", "form": ""}, {"id": 29, "name": "Crack on branch", "health": "", "structure": "P", "form": ""}, {"id": 30, "name": "Crack on root", "health": "", "structure": "P", "form": ""}, {"id": 31, "name": "Crooked", "health": "", "structure": "P", "form": ""}, {"id": 32, "name": "Crossing branches", "health": "", "structure": "", "form": ""}, {"id": 33, "name": "Crossing trunks", "health": "", "structure": "P", "form": ""}, {"id": 34, "name": "Crown", "health": "", "structure": "", "form": ""}, {"id": 35, "name": "Crown conflict with building", "health": "", "structure": "", "form": "P"}, {"id": 36, "name": "Crown growth suppressed by adjacent trees", "health": "P", "structure": "", "form": "P"}, {"id": 37, "name": "Dead branch", "health": "", "structure": "", "form": ""}, {"id": 38, "name": "Dead branch_close up", "health": "", "structure": "", "form": ""}, {"id": 39, "name": "Dead branches", "health": "", "structure": "", "form": ""}, {"id": 40, "name": "Dead frond", "health": "", "structure": "", "form": ""}, {"id": 41, "name": "Dead fronds", "health": "", "structure": "", "form": ""}, {"id": 42, "name": "Dead stub", "health": "", "structure": "", "form": ""}, {"id": 43, "name": "Dead surface root", "health": "", "structure": "P", "form": ""}, {"id": 44, "name": "Dead tree", "health": "P", "structure": "P", "form": "P"}, {"id": 45, "name": "Dead trunk", "health": "", "structure": "P", "form": "P"}, {"id": 46, "name": "Dead twigs", "health": "", "structure": "", "form": ""}, {"id": 47, "name": "Decay on branch", "health": "", "structure": "P", "form": ""}, {"id": 48, "name": "Decay on roots", "health": "", "structure": "P", "form": "P"}, {"id": 49, "name": "Decay on trunk", "health": "", "structure": "P", "form": "P"}, {"id": 50, "name": "Dehydrated trunk", "health": "P", "structure": "P", "form": "P"}, {"id": 51, "name": "Dieback", "health": "P", "structure": "", "form": ""}, {"id": 52, "name": "Drooping branches", "health": "", "structure": "", "form": "P"}, {"id": 53, "name": "Epicormics", "health": "", "structure": "", "form": ""}, {"id": 54, "name": "Epiphytic plant", "health": "", "structure": "", "form": ""}, {"id": 55, "name": "Exposed dead wood on branch", "health": "", "structure": "P", "form": ""}, {"id": 56, "name": "Exposed dead wood on trunk", "health": "", "structure": "P", "form": ""}, {"id": 57, "name": "Exposed root", "health": "", "structure": "", "form": ""}, {"id": 58, "name": "Fissures on branches", "health": "", "structure": "", "form": ""}, {"id": 59, "name": "Fungal fruiting bodies on branch", "health": "", "structure": "", "form": ""}, {"id": 60, "name": "Fungal fruiting bodies on root", "health": "", "structure": "P", "form": ""}, {"id": 61, "name": "Fungal fruiting bodies on trunk", "health": "", "structure": "P", "form": ""}, {"id": 62, "name": "Fungal fruiting bodies on trunk base", "health": "", "structure": "P", "form": ""}, {"id": 63, "name": "Fungal fruiting body on branch", "health": "", "structure": "", "form": ""}, {"id": 64, "name": "Fungal fruiting body on root", "health": "", "structure": "P", "form": ""}, {"id": 65, "name": "Fungal fruiting body on trunk", "health": "", "structure": "P", "form": ""}, {"id": 66, "name": "Fungal fruiting body on trunk base", "health": "", "structure": "P", "form": ""}, {"id": 67, "name": "Fungi", "health": "", "structure": "", "form": ""}, {"id": 68, "name": "Gall", "health": "", "structure": "P", "form": ""}, {"id": 69, "name": "Galls", "health": "", "structure": "P", "form": ""}, {"id": 70, "name": "Girdling roots", "health": "", "structure": "P", "form": ""}, {"id": 71, "name": "Hanger", "health": "", "structure": "", "form": ""}, {"id": 72, "name": "Heavy lateral branch", "health": "", "structure": "P", "form": "P"}, {"id": 73, "name": "Imbalanced crown", "health": "", "structure": "P", "form": "P"}, {"id": 74, "name": "In conflict with the hoarding", "health": "", "structure": "", "form": "P"}, {"id": 75, "name": "Included bark", "health": "", "structure": "P", "form": ""}, {"id": 76, "name": "Included bark with response growth", "health": "", "structure": "P", "form": ""}, {"id": 77, "name": "Large wound on branch", "health": "", "structure": "", "form": ""}, {"id": 78, "name": "Large wound on trunk", "health": "", "structure": "P", "form": ""}, {"id": 79, "name": "Leaning", "health": "", "structure": "", "form": ""}, {"id": 80, "name": "Leaning due to phototropism", "health": "", "structure": "", "form": ""}, {"id": 81, "name": "Leaning with self-correction", "health": "", "structure": "", "form": ""}, {"id": 82, "name": "Leaning with staking", "health": "", "structure": "", "form": ""}, {"id": 83, "name": "Leaning without root-plate movement", "health": "", "structure": "", "form": ""}, {"id": 84, "name": "Lion's tailing", "health": "", "structure": "", "form": ""}, {"id": 85, "name": "Low live crown ratio", "health": "P", "structure": "", "form": "P"}, {"id": 86, "name": "Main trunk broken", "health": "P", "structure": "P", "form": "P"}, {"id": 87, "name": "Mechanical injury", "health": "", "structure": "", "form": ""}, {"id": 88, "name": "Minor dead branch", "health": "", "structure": "", "form": ""}, {"id": 89, "name": "Minor dieback", "health": "P", "structure": "", "form": "P"}, {"id": 90, "name": "Minor sap flow", "health": "", "structure": "", "form": ""}, {"id": 91, "name": "Missing leader", "health": "P", "structure": "P", "form": "P"}, {"id": 92, "name": "Multiple trunks", "health": "", "structure": "", "form": ""}, {"id": 93, "name": "Narrowing trunk", "health": "", "structure": "P", "form": "P"}, {"id": 94, "name": "No hollow detected", "health": "", "structure": "", "form": ""}, {"id": 95, "name": "No visible root flare", "health": "", "structure": "", "form": ""}, {"id": 96, "name": "Old termite track", "health": "", "structure": "", "form": ""}, {"id": 97, "name": "On slope", "health": "", "structure": "", "form": ""}, {"id": 98, "name": "Overextended branch", "health": "", "structure": "", "form": "P"}, {"id": 99, "name": "Overgrown", "health": "", "structure": "P", "form": "P"}, {"id": 100, "name": "Parasitic plant", "health": "", "structure": "", "form": ""}, {"id": 101, "name": "Penciling", "health": "P", "structure": "", "form": ""}, {"id": 102, "name": "Poor health", "health": "P", "structure": "", "form": ""}, {"id": 103, "name": "Poor taper", "health": "", "structure": "P", "form": "P"}, {"id": 104, "name": "Previous root-plate movement", "health": "", "structure": "P", "form": "P"}, {"id": 105, "name": "Pruning wound on branch", "health": "", "structure": "", "form": ""}, {"id": 106, "name": "Pruning wound on trunk", "health": "", "structure": "", "form": ""}, {"id": 107, "name": "Reduced crown", "health": "", "structure": "", "form": "P"}, {"id": 108, "name": "Removed", "health": "", "structure": "", "form": ""}, {"id": 109, "name": "Restricted root growth", "health": "", "structure": "P", "form": ""}, {"id": 110, "name": "Root", "health": "", "structure": "", "form": ""}, {"id": 111, "name": "Root plate movement", "health": "", "structure": "P", "form": "P"}, {"id": 112, "name": "Sap flow", "health": "", "structure": "", "form": ""}, {"id": 113, "name": "Seasonal defoliation", "health": "", "structure": "", "form": ""}, {"id": 114, "name": "Severely leaning", "health": "", "structure": "P", "form": "P"}, {"id": 115, "name": "Severely sparse foliage", "health": "P", "structure": "", "form": ""}, {"id": 116, "name": "Sign of borer", "health": "", "structure": "P", "form": ""}, {"id": 117, "name": "Sign of pest", "health": "P", "structure": "", "form": ""}, {"id": 118, "name": "Sign of pest infestation", "health": "P", "structure": "", "form": ""}, {"id": 119, "name": "Sign of Phauda flammans infestation", "health": "P", "structure": "", "form": ""}, {"id": 120, "name": "Slightly leaning", "health": "", "structure": "", "form": ""}, {"id": 121, "name": "Small crown size", "health": "P", "structure": "", "form": ""}, {"id": 122, "name": "Soil erosion", "health": "", "structure": "P", "form": ""}, {"id": 123, "name": "Sparse foliage", "health": "P", "structure": "", "form": ""}, {"id": 124, "name": "Spiral grain", "health": "", "structure": "", "form": ""}, {"id": 125, "name": "Split", "health": "", "structure": "P", "form": ""}, {"id": 126, "name": "Split on branch", "health": "", "structure": "", "form": ""}, {"id": 127, "name": "Split on root", "health": "", "structure": "P", "form": ""}, {"id": 128, "name": "Stump", "health": "", "structure": "", "form": ""}, {"id": 129, "name": "Strangled by ficus seedling", "health": "", "structure": "", "form": ""}, {"id": 130, "name": "Sunscald", "health": "", "structure": "P", "form": ""}, {"id": 131, "name": "Suspected BRRD", "health": "", "structure": "P", "form": ""}, {"id": 132, "name": "Suspected hollow by sounding test", "health": "", "structure": "P", "form": ""}, {"id": 133, "name": "Swelling", "health": "", "structure": "P", "form": ""}, {"id": 134, "name": "Tag", "health": "", "structure": "", "form": ""}, {"id": 135, "name": "Tearing wound", "health": "", "structure": "", "form": ""}, {"id": 136, "name": "Termite mud tubes", "health": "", "structure": "P", "form": ""}, {"id": 137, "name": "Termite track", "health": "", "structure": "P", "form": ""}, {"id": 138, "name": "Termite track with live termite", "health": "", "structure": "P", "form": ""}, {"id": 139, "name": "Topped", "health": "", "structure": "P", "form": "P"}, {"id": 140, "name": "Topped branch", "health": "", "structure": "", "form": ""}, {"id": 141, "name": "Tree located at drainage channel embankment", "health": "", "structure": "", "form": ""}, {"id": 142, "name": "Tree located near hoarding", "health": "", "structure": "", "form": ""}, {"id": 143, "name": "Trunk", "health": "", "structure": "", "form": ""}, {"id": 144, "name": "Trunk base", "health": "", "structure": "", "form": ""}, {"id": 145, "name": "Trunk embedded in fence", "health": "", "structure": "P", "form": ""}, {"id": 146, "name": "Trunk in conflict with railing", "health": "", "structure": "P", "form": ""}, {"id": 147, "name": "Uprooted", "health": "", "structure": "P", "form": ""}, {"id": 148, "name": "V-shaped crotch with included bark", "health": "", "structure": "", "form": ""}, {"id": 149, "name": "Whole view", "health": "", "structure": "", "form": ""}, {"id": 150, "name": "Wilted apical bud", "health": "P", "structure": "", "form": ""}, {"id": 151, "name": "Wilted crown", "health": "P", "structure": "", "form": ""}, {"id": 152, "name": "Wilting", "health": "P", "structure": "P", "form": ""}, {"id": 153, "name": "Wilting fronds", "health": "P", "structure": "", "form": ""}, {"id": 154, "name": "Within construction site", "health": "", "structure": "", "form": ""}, {"id": 155, "name": "Wound on branch", "health": "", "structure": "", "form": ""}, {"id": 156, "name": "Wound on roots", "health": "", "structure": "", "form": ""}, {"id": 157, "name": "Wound on trunk", "health": "", "structure": "", "form": ""}, {"id": 158, "name": "Wound on trunk union", "health": "", "structure": "", "form": ""}, {"id": 159, "name": "Wound sealed by concrete", "health": "", "structure": "", "form": ""}, {"id": 160, "name": "Wound with decay on branch", "health": "", "structure": "", "form": ""}, {"id": 161, "name": "Wound with decay on trunk", "health": "", "structure": "P", "form": ""}];
+
+const ALIASES = {
+  "tree is located proximity to the hoarding": "Tree located near hoarding",
+  "proximity to the hoarding": "Tree located near hoarding",
+  "located proximity to the hoarding": "Tree located near hoarding",
+  "crook": "Crooked",
+  "crooks": "Crooked",
+  "crook trunk": "Crooked",
+  "exposed roots": "Exposed root",
+  "cross trunks": "Crossing trunks",
+  "cross branches": "Crossing branches",
+  "branch topped": "Topped branch",
+  "wound on branches": "Wound on branch",
+  "wounds on trunk": "Wound on trunk",
+  "over-extending branch": "Overextended branch",
+  "over-extend": "Overextended branch",
+  "overextend": "Overextended branch",
+  "crown conflict with building structure": "Crown conflict with building",
+  "wilting crown": "Wilted crown",
+  "small crown": "Small crown size",
+  "epicormics attached to the trunk": "Epicormics",
+  "multiple-trunks": "Multiple trunks",
+  "abnormal bark cracks on trunk": "Abnormal bark crack on trunk",
+  "strangled by ficus seeding": "Strangled by ficus seedling",
+  "large wound along trunk": "Large wound on trunk",
+  "broken main trunk": "Main trunk broken",
+  "broken trunk": "Main trunk broken",
+  "cavities on trunk": "Cavity on trunk",
+  "asymmetric": "Asymmetric crown",
+  "on slope)": "On slope",
+  "large decaying wound along trunk": "Wound with decay on trunk",
+  "large decaying wound on trunk": "Wound with decay on trunk",
+  "sprase foliage": "Sparse foliage",
+  "lion tail": "Lion's tailing",
+  "lion-tail": "Lion's tailing",
+  "lion's tail": "Lion's tailing"
+};
+
+const GENERIC_NAMES = new Set(["crown", "root", "trunk", "tag", "stump"]);
+
+let allTrees = [];
+let originalData = [];
+
+function normalize(text) {
+  return String(text || "").replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function searchIn(text, keyword) {
+  if (!text || !keyword) return false;
+  return normalize(text).includes(normalize(keyword));
+}
+
+function badge(val) {
+  if (!val) return "";
+  const v = String(val).toUpperCase();
+  const cls = v === "P" ? "badge-p" : v === "A" ? "badge-a" : v === "G" ? "badge-g" : "";
+  return `<span class="badge ${cls}">${v}</span>`;
+}
+
+function findOfficial(name) {
+  const n = normalize(name);
+  return OFFICIAL_DEFECTS.find(d => normalize(d.name) === n) || null;
+}
+
+function matchDefects(remarks) {
+  const tokens = String(remarks || "").split(/[,;，、]/).map(t => t.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim()).filter(Boolean);
+  const matched = [];
+  const unmatched = [];
+  const sorted = [...OFFICIAL_DEFECTS].sort((a, b) => b.name.length - a.name.length);
+
+  for (const raw of tokens) {
+    const token = normalize(raw);
+    let hit = findOfficial(raw);
+    if (!hit && ALIASES[token]) hit = findOfficial(ALIASES[token]);
+    if (!hit) {
+      hit = sorted.find(d => {
+        const n = normalize(d.name);
+        if (GENERIC_NAMES.has(n)) return false;
+        return token === n || token.includes(n);
+      });
+    }
+    if (hit) {
+      if (!matched.some(m => m.name === hit.name)) matched.push(hit);
+    } else {
+      unmatched.push(raw);
+    }
+  }
+  return { matched, unmatched };
+}
+
+function applySpecies(species) {
+  const s = String(species || "").replace(/\u00a0/g, " ");
+  const form = [];
+  const health = [];
+  const structure = [];
+  if (searchIn(s, "dead tree") || s.trim() === "Dead tree") {
+    form.push("species: Dead tree");
+    health.push("species: Dead tree");
+    structure.push("species: Dead tree");
+  }
+  if (searchIn(s, "Leucaena leucocephala")) {
+    form.push("species: Leucaena leucocephala");
+    structure.push("species: Leucaena leucocephala");
+  }
+  return { form, health, structure };
+}
+
+function calcConditions(species, remarks) {
+  const speciesHits = applySpecies(species);
+  const { matched, unmatched } = matchDefects(remarks);
+  const empty = !remarks || String(remarks).trim() === "";
+
+  const formHits = [...speciesHits.form];
+  const healthHits = [...speciesHits.health];
+  const structHits = [...speciesHits.structure];
+  for (const d of matched) {
+    if (d.form === "P") formHits.push(d.name);
+    if (d.health === "P") healthHits.push(d.name);
+    if (d.structure === "P") structHits.push(d.name);
+  }
+
+  let calcForm = formHits.length ? "P" : "A";
+  let calcHealth = healthHits.length ? "P" : (empty && !speciesHits.health.length ? "" : "A");
+  let calcStructure = structHits.length ? "P" : (empty && !speciesHits.structure.length ? "" : "A");
+  return { calcForm, calcHealth, calcStructure, matched, unmatched, formHits, healthHits, structHits };
+}
+
+function hasSignificantDefect(tree) {
+  return tree.calcForm === "P" || tree.calcHealth === "P" || tree.calcStructure === "P";
+}
+
+function toNumber(v) {
+  const n = parseFloat(String(v ?? "").trim());
+  return Number.isFinite(n) ? n : 0;
+}
+
+function calcSuitCodes(tree) {
+  const codes = ["a"];
+  const species = String(tree.species || "").replace(/\u00a0/g, " ");
+  const height = toNumber(tree.height);
+  const dbh = toNumber(tree.dbh);
+  const remarks = String(tree.remarks || "");
+
+  if (height > 5 && dbh > 200) {
+    codes.push("b", "c");
+  }
+  if (dbh > 700) codes.push("d");
+  if (hasSignificantDefect(tree)) codes.push("f");
+  if (species.trim() === "Leucaena leucocephala") codes.push("g");
+  if (searchIn(remarks, "slope") || searchIn(remarks, "on slope")) codes.push("h");
+  if (searchIn(remarks, "hoarding") || searchIn(remarks, "road") || searchIn(remarks, "slope") || searchIn(remarks, "proximity to the hoarding")) {
+    codes.push("i");
+  }
+  return [...new Set(codes)].sort().join(",");
+}
+
+function recompute(tree) {
+  const c = calcConditions(tree.species, tree.remarks);
+  tree.calcForm = c.calcForm;
+  tree.calcHealth = c.calcHealth;
+  tree.calcStructure = c.calcStructure;
+  tree.matched = c.matched;
+  tree.unmatched = c.unmatched;
+  tree.formHits = c.formHits;
+  tree.healthHits = c.healthHits;
+  tree.structHits = c.structHits;
+  tree.calcSuit = calcSuitCodes(tree);
+}
+
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function chips(tree) {
+  const parts = [];
+  for (const d of tree.matched || []) {
+    const flags = [d.form === "P" ? "F" : "", d.health === "P" ? "H" : "", d.structure === "P" ? "S" : ""].filter(Boolean);
+    const label = flags.length ? `${d.name} (${flags.join("")})` : d.name;
+    parts.push(`<span class="chip" title="${escapeHtml(label)}">${escapeHtml(label)}</span>`);
+  }
+  for (const u of tree.unmatched || []) {
+    parts.push(`<span class="chip unmatched" title="未配對到官方名單">${escapeHtml(u)}</span>`);
+  }
+  return parts.join(" ") || "";
+}
+
+function renderDefectTable(filter = "") {
+  const q = normalize(filter);
+  const tbody = document.getElementById("defectBody");
+  tbody.innerHTML = OFFICIAL_DEFECTS.filter(d => !q || normalize(d.name).includes(q)).map(d => `
+    <tr>
+      <td>${d.id}</td>
+      <td>${escapeHtml(d.name)}</td>
+      <td class="${d.health === "P" ? "diff" : ""}">${badge(d.health)}</td>
+      <td class="${d.structure === "P" ? "diff" : ""}">${badge(d.structure)}</td>
+      <td class="${d.form === "P" ? "diff" : ""}">${badge(d.form)}</td>
+    </tr>
+  `).join("");
+}
+
+function renderTable(filter = "") {
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+  const q = normalize(filter);
+  let shown = 0, diffs = 0, unmatchedTrees = 0;
+
+  allTrees.forEach((t, idx) => {
+    const hay = normalize(`${t.treeNo} ${t.species} ${t.chinese} ${t.remarks}`);
+    if (q && !hay.includes(q)) return;
+    shown++;
+    const formMatch = t.origForm === t.calcForm;
+    const healthMatch = t.origHealth === t.calcHealth;
+    const structMatch = t.origStructure === t.calcStructure;
+    if (!formMatch || !healthMatch || !structMatch) diffs++;
+    if (t.unmatched && t.unmatched.length) unmatchedTrees++;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="tree-col">${escapeHtml(t.treeNo)}</td>
+      <td>${escapeHtml(String(t.species || "").replace(/\u00a0/g, " "))}</td>
+      <td>${escapeHtml(t.chinese)}</td>
+      <td>${escapeHtml(t.height)}</td>
+      <td>${escapeHtml(t.dbh)}</td>
+      <td>${escapeHtml(t.amenity)}</td>
+      <td>${escapeHtml(t.suitability)}</td>
+      <td>${badge(t.origForm)}</td>
+      <td class="${formMatch ? "match" : "diff"}">${badge(t.calcForm)}</td>
+      <td>${badge(t.origHealth)}</td>
+      <td class="${healthMatch ? "match" : "diff"}">${badge(t.calcHealth)}</td>
+      <td>${badge(t.origStructure)}</td>
+      <td class="${structMatch ? "match" : "diff"}">${badge(t.calcStructure)}</td>
+      <td class="computed">${escapeHtml(t.calcSuit)}</td>
+      <td>${chips(t)}</td>
+      <td><textarea class="remarks-input" data-idx="${idx}">${escapeHtml(t.remarks)}</textarea></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("stats").innerHTML = allTrees.length
+    ? `顯示 <strong>${shown}</strong> / ${allTrees.length} 棵樹　|　Form / Health / Structure 與原值有差異：<strong style="color:var(--danger)">${diffs}</strong> 棵　|　Remarks 有未配對項目：<strong style="color:var(--warning)">${unmatchedTrees}</strong> 棵`
+    : "尚未上傳檔案。資料只在呢個瀏覽器處理。";
+}
+
+function parseWorkbook(data) {
+  const wb = XLSX.read(data, { type: "array" });
+  const sheetName = wb.SheetNames.find(n => n.includes("Initial") || n.includes("Tree") || n.includes("Schedule")) || wb.SheetNames[0];
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: "" });
+
+  let startRow = 5;
+  for (let i = 0; i < Math.min(12, rows.length); i++) {
+    if (rows[i].some(c => String(c).includes("Tree No"))) { startRow = i + 1; break; }
+  }
+
+  const trees = [];
+  for (let i = startRow; i < rows.length; i++) {
+    const r = rows[i];
+    const treeNo = r[2];
+    const species = r[4];
+    if ((!treeNo && !species) || String(treeNo).includes("Tree No") || String(species).includes("Scientific")) continue;
+    if (!treeNo && !species) continue;
+    if (!String(treeNo || "").trim()) continue;
+    const tree = {
+      part: r[0] || "",
+      group: r[1] || "",
+      treeNo: String(treeNo).trim(),
+      drawing: r[3] || "",
+      species: species || "",
+      chinese: r[5] || "",
+      height: r[6] || "",
+      dbh: r[7] || "",
+      crown: r[8] || "",
+      amenity: r[9] || "",
+      origForm: String(r[10] || "").trim().toUpperCase(),
+      origHealth: String(r[11] || "").trim().toUpperCase(),
+      origStructure: String(r[12] || "").trim().toUpperCase(),
+      suitability: r[13] || "L",
+      origSuitRem: r[14] || "",
+      conservation: r[15] || "",
+      remarks: r[16] || "",
+      easting: r[18] || "",
+      northing: r[19] || "",
+      rootLevel: r[20] || ""
+    };
+    recompute(tree);
+    trees.push(tree);
+  }
+  return trees;
+}
+
+async function loadFile(file) {
+  if (!file) return;
+  const data = await file.arrayBuffer();
+  allTrees = parseWorkbook(data);
+  originalData = JSON.parse(JSON.stringify(allTrees));
+  renderTable(document.getElementById("search").value);
+}
+
+document.getElementById("fileInput").addEventListener("change", (e) => loadFile(e.target.files[0]));
+
+const dropzone = document.getElementById("dropzone");
+["dragenter", "dragover"].forEach(ev => dropzone.addEventListener(ev, (e) => {
+  e.preventDefault(); dropzone.classList.add("drag");
+}));
+["dragleave", "drop"].forEach(ev => dropzone.addEventListener(ev, (e) => {
+  e.preventDefault(); dropzone.classList.remove("drag");
+}));
+dropzone.addEventListener("drop", (e) => {
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+
+document.getElementById("tbody").addEventListener("input", (e) => {
+  if (!e.target.classList.contains("remarks-input")) return;
+  const idx = parseInt(e.target.dataset.idx, 10);
+  allTrees[idx].remarks = e.target.value;
+  recompute(allTrees[idx]);
+  const tr = e.target.closest("tr");
+  const cells = tr.querySelectorAll("td");
+  const t = allTrees[idx];
+  cells[8].innerHTML = badge(t.calcForm);
+  cells[8].className = t.origForm === t.calcForm ? "match" : "diff";
+  cells[10].innerHTML = badge(t.calcHealth);
+  cells[10].className = t.origHealth === t.calcHealth ? "match" : "diff";
+  cells[12].innerHTML = badge(t.calcStructure);
+  cells[12].className = t.origStructure === t.calcStructure ? "match" : "diff";
+  cells[13].textContent = t.calcSuit;
+  cells[13].className = "computed";
+  cells[14].innerHTML = chips(t);
+});
+
+document.getElementById("search").addEventListener("input", (e) => renderTable(e.target.value));
+document.getElementById("defectSearch").addEventListener("input", (e) => renderDefectTable(e.target.value));
+
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("rulesPanel").hidden = btn.dataset.panel !== "rulesPanel";
+    document.getElementById("defectPanel").hidden = btn.dataset.panel !== "defectPanel";
+  });
+});
+
+function exportData() {
+  if (!allTrees.length) { alert("請先上傳 Excel 檔案"); return; }
+  const out = allTrees.map(t => ({
+    "Part": t.part,
+    "Tree Group": t.group,
+    "Tree No.": t.treeNo,
+    "Drawing No.": t.drawing,
+    "Scientific Name": String(t.species || "").replace(/\u00a0/g, " "),
+    "Chinese Name": t.chinese,
+    "Height (m)": t.height,
+    "DBH (mm)": t.dbh,
+    "Crown Spread (m)": t.crown,
+    "Amenity Value": t.amenity,
+    "Form (Orig)": t.origForm,
+    "Form (Calc)": t.calcForm,
+    "Health (Orig)": t.origHealth,
+    "Health (Calc)": t.calcHealth,
+    "Structure (Orig)": t.origStructure,
+    "Structure (Calc)": t.calcStructure,
+    "Suitability (H/M/L)": t.suitability,
+    "Suitability Remarks (Orig)": t.origSuitRem,
+    "Suitability Remarks (Calc)": t.calcSuit,
+    "Matched Defects": (t.matched || []).map(d => d.name).join("; "),
+    "Unmatched Remarks": (t.unmatched || []).join("; "),
+    "Conservation Status": t.conservation,
+    "Remarks": t.remarks,
+    "Easting": t.easting,
+    "Northing": t.northing,
+    "Root level (mPD)": t.rootLevel
+  }));
+  const ws = XLSX.utils.json_to_sheet(out);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Updated Tree Schedule");
+  XLSX.writeFile(wb, "Tree_Assessment_Updated.xlsx");
+}
+
+function resetAll() {
+  if (!originalData.length) return;
+  allTrees = JSON.parse(JSON.stringify(originalData));
+  renderTable(document.getElementById("search").value);
+}
+
+renderDefectTable();
+renderTable();
+</script>
+</body>
+</html>

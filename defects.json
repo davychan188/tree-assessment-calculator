@@ -1,0 +1,1129 @@
+[
+  {
+    "id": 1,
+    "name": "Abnormal bark crack on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 2,
+    "name": "Abnormal bark crack on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 3,
+    "name": "Abnormal leaf size",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 4,
+    "name": "Asymmetric crown",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 5,
+    "name": "Bending",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 6,
+    "name": "Beehive",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 7,
+    "name": "Bird nest",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 8,
+    "name": "Borer frass",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 9,
+    "name": "Borer holes",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 10,
+    "name": "Broken branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 11,
+    "name": "Broken branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 12,
+    "name": "Broken leader",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 13,
+    "name": "Bulge",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 14,
+    "name": "Burls",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 15,
+    "name": "Canker",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 16,
+    "name": "Cavity on branch",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 17,
+    "name": "Cavity on roots",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 18,
+    "name": "Cavity on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 19,
+    "name": "Chlorotic leaves",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 20,
+    "name": "Climbers",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 21,
+    "name": "Collapsed",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 22,
+    "name": "Co-dominant branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 23,
+    "name": "Co-dominant branches with included bark",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 24,
+    "name": "Co-dominant trunks",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 25,
+    "name": "Co-dominant trunks with included bark",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 26,
+    "name": "Conflict with building",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 27,
+    "name": "Conflict with traffic",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 28,
+    "name": "Crack",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 29,
+    "name": "Crack on branch",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 30,
+    "name": "Crack on root",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 31,
+    "name": "Crooked",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 32,
+    "name": "Crossing branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 33,
+    "name": "Crossing trunks",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 34,
+    "name": "Crown",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 35,
+    "name": "Crown conflict with building",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 36,
+    "name": "Crown growth suppressed by adjacent trees",
+    "health": "P",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 37,
+    "name": "Dead branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 38,
+    "name": "Dead branch_close up",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 39,
+    "name": "Dead branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 40,
+    "name": "Dead frond",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 41,
+    "name": "Dead fronds",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 42,
+    "name": "Dead stub",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 43,
+    "name": "Dead surface root",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 44,
+    "name": "Dead tree",
+    "health": "P",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 45,
+    "name": "Dead trunk",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 46,
+    "name": "Dead twigs",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 47,
+    "name": "Decay on branch",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 48,
+    "name": "Decay on roots",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 49,
+    "name": "Decay on trunk",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 50,
+    "name": "Dehydrated trunk",
+    "health": "P",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 51,
+    "name": "Dieback",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 52,
+    "name": "Drooping branches",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 53,
+    "name": "Epicormics",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 54,
+    "name": "Epiphytic plant",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 55,
+    "name": "Exposed dead wood on branch",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 56,
+    "name": "Exposed dead wood on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 57,
+    "name": "Exposed root",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 58,
+    "name": "Fissures on branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 59,
+    "name": "Fungal fruiting bodies on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 60,
+    "name": "Fungal fruiting bodies on root",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 61,
+    "name": "Fungal fruiting bodies on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 62,
+    "name": "Fungal fruiting bodies on trunk base",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 63,
+    "name": "Fungal fruiting body on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 64,
+    "name": "Fungal fruiting body on root",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 65,
+    "name": "Fungal fruiting body on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 66,
+    "name": "Fungal fruiting body on trunk base",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 67,
+    "name": "Fungi",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 68,
+    "name": "Gall",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 69,
+    "name": "Galls",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 70,
+    "name": "Girdling roots",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 71,
+    "name": "Hanger",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 72,
+    "name": "Heavy lateral branch",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 73,
+    "name": "Imbalanced crown",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 74,
+    "name": "In conflict with the hoarding",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 75,
+    "name": "Included bark",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 76,
+    "name": "Included bark with response growth",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 77,
+    "name": "Large wound on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 78,
+    "name": "Large wound on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 79,
+    "name": "Leaning",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 80,
+    "name": "Leaning due to phototropism",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 81,
+    "name": "Leaning with self-correction",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 82,
+    "name": "Leaning with staking",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 83,
+    "name": "Leaning without root-plate movement",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 84,
+    "name": "Lion's tailing",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 85,
+    "name": "Low live crown ratio",
+    "health": "P",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 86,
+    "name": "Main trunk broken",
+    "health": "P",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 87,
+    "name": "Mechanical injury",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 88,
+    "name": "Minor dead branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 89,
+    "name": "Minor dieback",
+    "health": "P",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 90,
+    "name": "Minor sap flow",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 91,
+    "name": "Missing leader",
+    "health": "P",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 92,
+    "name": "Multiple trunks",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 93,
+    "name": "Narrowing trunk",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 94,
+    "name": "No hollow detected",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 95,
+    "name": "No visible root flare",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 96,
+    "name": "Old termite track",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 97,
+    "name": "On slope",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 98,
+    "name": "Overextended branch",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 99,
+    "name": "Overgrown",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 100,
+    "name": "Parasitic plant",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 101,
+    "name": "Penciling",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 102,
+    "name": "Poor health",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 103,
+    "name": "Poor taper",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 104,
+    "name": "Previous root-plate movement",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 105,
+    "name": "Pruning wound on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 106,
+    "name": "Pruning wound on trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 107,
+    "name": "Reduced crown",
+    "health": "",
+    "structure": "",
+    "form": "P"
+  },
+  {
+    "id": 108,
+    "name": "Removed",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 109,
+    "name": "Restricted root growth",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 110,
+    "name": "Root",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 111,
+    "name": "Root plate movement",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 112,
+    "name": "Sap flow",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 113,
+    "name": "Seasonal defoliation",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 114,
+    "name": "Severely leaning",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 115,
+    "name": "Severely sparse foliage",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 116,
+    "name": "Sign of borer",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 117,
+    "name": "Sign of pest",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 118,
+    "name": "Sign of pest infestation",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 119,
+    "name": "Sign of Phauda flammans infestation",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 120,
+    "name": "Slightly leaning",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 121,
+    "name": "Small crown size",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 122,
+    "name": "Soil erosion",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 123,
+    "name": "Sparse foliage",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 124,
+    "name": "Spiral grain",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 125,
+    "name": "Split",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 126,
+    "name": "Split on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 127,
+    "name": "Split on root",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 128,
+    "name": "Stump",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 129,
+    "name": "Strangled by ficus seedling",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 130,
+    "name": "Sunscald",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 131,
+    "name": "Suspected BRRD",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 132,
+    "name": "Suspected hollow by sounding test",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 133,
+    "name": "Swelling",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 134,
+    "name": "Tag",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 135,
+    "name": "Tearing wound",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 136,
+    "name": "Termite mud tubes",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 137,
+    "name": "Termite track",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 138,
+    "name": "Termite track with live termite",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 139,
+    "name": "Topped",
+    "health": "",
+    "structure": "P",
+    "form": "P"
+  },
+  {
+    "id": 140,
+    "name": "Topped branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 141,
+    "name": "Tree located at drainage channel embankment",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 142,
+    "name": "Tree located near hoarding",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 143,
+    "name": "Trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 144,
+    "name": "Trunk base",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 145,
+    "name": "Trunk embedded in fence",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 146,
+    "name": "Trunk in conflict with railing",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 147,
+    "name": "Uprooted",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 148,
+    "name": "V-shaped crotch with included bark",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 149,
+    "name": "Whole view",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 150,
+    "name": "Wilted apical bud",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 151,
+    "name": "Wilted crown",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 152,
+    "name": "Wilting",
+    "health": "P",
+    "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 153,
+    "name": "Wilting fronds",
+    "health": "P",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 154,
+    "name": "Within construction site",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 155,
+    "name": "Wound on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 156,
+    "name": "Wound on roots",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 157,
+    "name": "Wound on trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 158,
+    "name": "Wound on trunk union",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 159,
+    "name": "Wound sealed by concrete",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 160,
+    "name": "Wound with decay on branch",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 161,
+    "name": "Wound with decay on trunk",
+    "health": "",
+    "structure": "P",
+    "form": ""
+  }
+]
