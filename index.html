@@ -96,6 +96,12 @@
   footer { text-align: center; padding: 1rem; font-size: 0.8rem; color: #666; }
   details.rules summary { cursor: pointer; font-weight: 700; color: var(--primary); }
   #defectSearch { width: min(100%, 320px); margin-bottom: 0.6rem; }
+  button.tree-link {
+    background: #eef2f0; color: var(--primary); border: 1px solid var(--line);
+    min-height: 0; padding: 0.15rem 0.4rem; margin: 0 0.15rem 0.2rem 0;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  button.tree-link:hover { background: var(--accent); }
 </style>
 </head>
 <body>
@@ -121,6 +127,7 @@
     <div class="tabs">
       <button type="button" class="active" data-panel="rulesPanel">規則說明</button>
       <button type="button" data-panel="defectPanel">缺陷名單（161）</button>
+      <button type="button" id="unmatchedTab" data-panel="unmatchedPanel">未在名單內</button>
     </div>
     <div id="rulesPanel">
       <div class="legend">
@@ -149,6 +156,17 @@
             <tr><th>#</th><th>Defect</th><th>Health</th><th>Structure</th><th>Form</th></tr>
           </thead>
           <tbody id="defectBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="unmatchedPanel" hidden>
+      <p id="unmatchedSummary" style="margin:0 0 0.6rem; font-size:0.9rem; color:#444;"></p>
+      <div class="table-wrap" style="max-height:360px;">
+        <table id="unmatchedTable">
+          <thead>
+            <tr><th>#</th><th>不在名單內的缺陷</th><th>棵數</th><th>Tree No.</th></tr>
+          </thead>
+          <tbody id="unmatchedBody"></tbody>
         </table>
       </div>
     </div>
@@ -393,7 +411,60 @@ function renderDefectTable(filter = "") {
   `).join("");
 }
 
+function collectUnmatched() {
+  const map = new Map();
+  for (const t of allTrees) {
+    for (const u of (t.unmatched || [])) {
+      const key = normalize(u);
+      if (!key) continue;
+      if (!map.has(key)) map.set(key, { text: u, trees: [] });
+      const rec = map.get(key);
+      if (!rec.trees.includes(t.treeNo)) rec.trees.push(t.treeNo);
+    }
+  }
+  return [...map.values()].sort((a, b) => b.trees.length - a.trees.length || a.text.localeCompare(b.text));
+}
+
+function showPanel(panelId) {
+  document.querySelectorAll(".tabs button").forEach(b => {
+    b.classList.toggle("active", b.dataset.panel === panelId);
+  });
+  document.getElementById("rulesPanel").hidden = panelId !== "rulesPanel";
+  document.getElementById("defectPanel").hidden = panelId !== "defectPanel";
+  document.getElementById("unmatchedPanel").hidden = panelId !== "unmatchedPanel";
+}
+
+function renderUnmatchedList() {
+  const items = collectUnmatched();
+  const tab = document.getElementById("unmatchedTab");
+  tab.textContent = items.length ? `未在名單內（${items.length}）` : "未在名單內";
+  const summary = document.getElementById("unmatchedSummary");
+  const tbody = document.getElementById("unmatchedBody");
+  if (!allTrees.length) {
+    summary.textContent = "請先上傳 Excel，這邊會列出 Remarks 裡不在官方缺陷名單的項目。";
+    tbody.innerHTML = "";
+    return;
+  }
+  if (!items.length) {
+    summary.textContent = "所有 Remarks 項目都已配對到官方缺陷名單。";
+    tbody.innerHTML = "";
+    return;
+  }
+  const treeCount = allTrees.filter(t => t.unmatched && t.unmatched.length).length;
+  summary.textContent = `共 ${items.length} 種不在名單內的缺陷，涉及 ${treeCount} 棵樹。點 Tree No. 可喺下表篩選。`;
+  tbody.innerHTML = items.map((item, i) => {
+    const nos = item.trees.map(no => `<button type="button" class="tree-link" data-tree="${escapeHtml(no)}">${escapeHtml(no)}</button>`).join(" ");
+    return `<tr>
+      <td>${i + 1}</td>
+      <td>${escapeHtml(item.text)}</td>
+      <td>${item.trees.length}</td>
+      <td>${nos}</td>
+    </tr>`;
+  }).join("");
+}
+
 function renderTable(filter = "") {
+
   const tbody = document.getElementById("tbody");
   tbody.innerHTML = "";
   const q = normalize(filter);
@@ -434,6 +505,7 @@ function renderTable(filter = "") {
   document.getElementById("stats").innerHTML = allTrees.length
     ? `顯示 <strong>${shown}</strong> / ${allTrees.length} 棵樹　|　Form / Health / Structure 與原值有差異：<strong style="color:var(--danger)">${diffs}</strong> 棵　|　Remarks 有未配對項目：<strong style="color:var(--warning)">${unmatchedTrees}</strong> 棵`
     : "尚未上傳檔案。資料只在呢個瀏覽器處理。";
+  renderUnmatchedList();
 }
 
 function parseWorkbook(data) {
@@ -521,18 +593,23 @@ document.getElementById("tbody").addEventListener("input", (e) => {
   cells[13].textContent = t.calcSuit;
   cells[13].className = "computed";
   cells[14].innerHTML = chips(t);
+  renderUnmatchedList();
 });
 
 document.getElementById("search").addEventListener("input", (e) => renderTable(e.target.value));
 document.getElementById("defectSearch").addEventListener("input", (e) => renderDefectTable(e.target.value));
 
 document.querySelectorAll(".tabs button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById("rulesPanel").hidden = btn.dataset.panel !== "rulesPanel";
-    document.getElementById("defectPanel").hidden = btn.dataset.panel !== "defectPanel";
-  });
+  btn.addEventListener("click", () => showPanel(btn.dataset.panel));
+});
+
+document.getElementById("unmatchedBody").addEventListener("click", (e) => {
+  const btn = e.target.closest(".tree-link");
+  if (!btn) return;
+  const input = document.getElementById("search");
+  input.value = btn.dataset.tree;
+  renderTable(input.value);
+  document.getElementById("treeTable").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 function exportData() {
@@ -566,8 +643,16 @@ function exportData() {
     "Root level (mPD)": t.rootLevel
   }));
   const ws = XLSX.utils.json_to_sheet(out);
+  const unmatchedOut = collectUnmatched().map((item, i) => ({
+    "#": i + 1,
+    "Defect not in official list": item.text,
+    "Tree count": item.trees.length,
+    "Tree No.": item.trees.join(", ")
+  }));
+  const ws2 = XLSX.utils.json_to_sheet(unmatchedOut.length ? unmatchedOut : [{"#": "", "Defect not in official list": "(none)", "Tree count": 0, "Tree No.": ""}]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Updated Tree Schedule");
+  XLSX.utils.book_append_sheet(wb, ws2, "Not in Defect List");
   XLSX.writeFile(wb, "Tree_Assessment_Updated.xlsx");
 }
 

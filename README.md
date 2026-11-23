@@ -19,7 +19,7 @@
   - `h`：Remarks 含 slope / on slope
   - `i`：Remarks 含 hoarding / road / slope
 
-修改 Remarks 後會即時重新計算。可匯出更新後的 Excel。未配對到官方名單的 Remarks 會以橙色標示。
+修改 Remarks 後會即時重新計算。可匯出更新後的 Excel。未配對到官方名單的 Remarks 會以橙色標示，並集中列在「未在名單內」一頁（含棵數同 Tree No.）；匯出 Excel 亦有 Not in Defect List 工作表。
 
 ## 檔案格式
 
