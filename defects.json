@@ -211,7 +211,7 @@
   },
   {
     "id": 31,
-    "name": "Crooked",
+    "name": "Crooks",
     "health": "",
     "structure": "P",
     "form": ""
@@ -1124,6 +1124,41 @@
     "name": "Wound with decay on trunk",
     "health": "",
     "structure": "P",
+    "form": ""
+  },
+  {
+    "id": 162,
+    "name": "Crown in conflict with building",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 163,
+    "name": "Rooting area is covered by debris",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 164,
+    "name": "Trunk in conflict with hoarding",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 165,
+    "name": "Angle bar embedded in trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 166,
+    "name": "Tree located at drainage channel",
+    "health": "",
+    "structure": "",
     "form": ""
   }
 ]

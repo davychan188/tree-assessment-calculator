@@ -6,7 +6,7 @@
 
 ## 規則
 
-- **Form / Health / Structure**：Remarks 逐項配對官方 161 項缺陷名單。該項若標示 P，對應評分便為 P；否則為 A。空 Remarks 時 Health / Structure 留空，Form 為 A。
+- **Form / Health / Structure**：Remarks 逐項配對官方 166 項缺陷名單。該項若標示 P，對應評分便為 P；否則為 A。空 Remarks 時 Health / Structure 留空，Form 為 A。
 - **Dead tree**：Form、Health、Structure 皆為 P。
 - **Leucaena leucocephala**（銀合歡）：Form 及 Structure 為 P。
 - **Suitability Remarks 代碼**
