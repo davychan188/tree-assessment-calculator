@@ -11,7 +11,7 @@
 - **Leucaena leucocephala**（銀合歡）：Form 及 Structure 為 P。
 - **Suitability Remarks 代碼**
   - `a`：一律加上
-  - `b`, `c`：高度大過 3m，而且 DBH 大過 130mm（剛好 3m 或 130mm 不加），而且 Form / Health / Structure 任何一項為 P
+  - `b`, `c`：高度達 3m，或 DBH 達 130mm（剛好 3m 或 130mm 亦加），或 Form / Health / Structure 任何一項為 P
   - `d`：DBH 大過 700mm
   - `e`：不自動加上
   - `f`：Form / Health / Structure 任何一項為 P

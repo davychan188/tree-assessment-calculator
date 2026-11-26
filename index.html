@@ -140,7 +140,7 @@
         <div class="legend-item">
           <strong>Suitability Remarks 代碼</strong><br>
           <span class="highlight-rule">a</span> 一律加上<br>
-          <span class="highlight-rule">b, c</span> 當高度大過 3m <em>而且</em> DBH 大過 130mm（剛好 3m 或 130mm 不加），而且 Form / Health / Structure 任何一項為 P<br>
+          <span class="highlight-rule">b, c</span> 當高度達 3m <em>或</em> DBH 達 130mm（剛好 3m 或 130mm 亦加），或 Form / Health / Structure 任何一項為 P<br>
           <span class="highlight-rule">d</span> 當 DBH 大過 700mm<br>
           <span class="highlight-rule">e</span> 不自動加上<br>
           <span class="highlight-rule">f</span> 當 Form / Health / Structure 任何一項為 P<br>
@@ -353,7 +353,7 @@ function calcSuitCodes(tree) {
   const dbh = toNumber(tree.dbh);
   const remarks = String(tree.remarks || "");
 
-  if (height > 3 && dbh > 130 && hasSignificantDefect(tree)) {
+  if (height >= 3 || dbh >= 130 || hasSignificantDefect(tree)) {
     codes.push("b", "c");
   }
   if (dbh > 700) codes.push("d");
