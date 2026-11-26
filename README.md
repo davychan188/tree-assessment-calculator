@@ -11,13 +11,13 @@
 - **Leucaena leucocephala**（銀合歡）：Form 及 Structure 為 P。
 - **Suitability Remarks 代碼**
   - `a`：一律加上
-  - `b`, `c`：高度大過 5m，而且 DBH 大過 200mm（剛好 5m 或 200mm 不加）
+  - `b`, `c`：高度大過 3m，而且 DBH 大過 130mm（剛好 3m 或 130mm 不加），而且 Form / Health / Structure 任何一項為 P
   - `d`：DBH 大過 700mm
   - `e`：不自動加上
   - `f`：Form / Health / Structure 任何一項為 P
   - `g`：樹種為 *Leucaena leucocephala*
   - `h`：Remarks 含 slope / on slope
-  - `i`：Remarks 含 hoarding / road / slope / restricted root growth
+  - `i`：Remarks 含 hoarding / road / slope / Suppressed by adjacent tree / At drainage channel embankment / debris / fencing
 
 修改 Remarks 後會即時重新計算。可匯出更新後的 Excel。未配對到官方名單的 Remarks 會以橙色標示，並集中列在「未在名單內」一頁（含棵數同 Tree No.）；匯出 Excel 亦有 Not in Defect List 工作表。
 
