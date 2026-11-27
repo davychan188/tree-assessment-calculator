@@ -211,7 +211,7 @@
   },
   {
     "id": 31,
-    "name": "Crooks",
+    "name": "Crooked",
     "health": "",
     "structure": "P",
     "form": ""
@@ -1128,7 +1128,7 @@
   },
   {
     "id": 162,
-    "name": "Crown in conflict with building",
+    "name": "Trunk in conflict with hoarding",
     "health": "",
     "structure": "",
     "form": ""
@@ -1142,21 +1142,189 @@
   },
   {
     "id": 164,
-    "name": "Trunk in conflict with hoarding",
-    "health": "",
-    "structure": "",
-    "form": ""
-  },
-  {
-    "id": 165,
     "name": "Angle bar embedded in trunk",
     "health": "",
     "structure": "",
     "form": ""
   },
   {
+    "id": 165,
+    "name": "Large area of exposed dead wood",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
     "id": 166,
-    "name": "Tree located at drainage channel",
+    "name": "Trunk in conflict with concrete",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 167,
+    "name": "At drainage channel embankment",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 168,
+    "name": "Suppressed by adjacent tree",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 169,
+    "name": "Suppressed growing environment",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 170,
+    "name": "Multiple branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 171,
+    "name": "Abnormal leaf color",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 172,
+    "name": "Wound on lower trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 173,
+    "name": "Cavity on lower trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 174,
+    "name": "Trunk in conflict with fencing",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 175,
+    "name": "Upper trunk is dead",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 176,
+    "name": "Trunk in conflict with iron pillar and fencing",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 177,
+    "name": "Concrete cover on rooting area",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 178,
+    "name": "Root growth restricted by hoarding",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 179,
+    "name": "Exposed deadwood on trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 180,
+    "name": "Root growth restricted by concrete",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 181,
+    "name": "Strangled by TG-T0797",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 182,
+    "name": "Suppressed by concrete",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 183,
+    "name": "Iron rod embedded in trunk",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 184,
+    "name": "Trunk entangled by ficus",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 185,
+    "name": "One of the main trunk is dead",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 186,
+    "name": "Pruned branches",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 187,
+    "name": "Hoarding fell on the tree",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 188,
+    "name": "Crown in conflict with electric cable",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 189,
+    "name": "Tree lost whole crown",
+    "health": "",
+    "structure": "",
+    "form": ""
+  },
+  {
+    "id": 190,
+    "name": "Crossing trunk",
     "health": "",
     "structure": "",
     "form": ""
